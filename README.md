@@ -1,6 +1,6 @@
 # Cadastro de Usuários
 
-Aplicação web para cadastrar e consultar usuários. O projeto oferece uma interface simples para preencher os dados de uma pessoa, visualizar os usuários cadastrados e removê-los da lista.
+Aplicação full stack para cadastro e gerenciamento de usuários, com uma interface web em React e uma API REST em Node.js. O frontend permite cadastrar, consultar e excluir usuários, enquanto o backend disponibiliza operações de criação, listagem, atualização e exclusão com persistência em MongoDB.
 
 ## Funcionalidades
 
@@ -21,12 +21,56 @@ Aplicação web para cadastrar e consultar usuários. O projeto oferece uma inte
 - **React Toastify** — notificações para o usuário.
 - **ESLint** — análise estática e padronização do código.
 
-## Requisitos
+## Backend
+
+A API REST foi desenvolvida com **Node.js**, **Express 5** e **Prisma 6**, com **MongoDB** como banco de dados. O CORS permite requisições entre origens diferentes. O backend é um projeto separado e deve estar disponível e em execução para o frontend se conectar.
+
+O modelo `User` possui os campos `id` (ObjectId do MongoDB, gerado automaticamente), `email` (obrigatório e único), `name` (obrigatório) e `age` (inteiro obrigatório).
+
+### Endpoints
+
+| Método | Rota | Descrição |
+| --- | --- | --- |
+| `GET` | `/usuarios` | Lista os usuários cadastrados. |
+| `POST` | `/usuarios` | Cadastra um usuário e retorna `201`. |
+| `PUT` | `/usuarios/:id` | Atualiza os dados de um usuário e retorna `200`. |
+| `DELETE` | `/usuarios/:id` | Exclui um usuário e retorna uma mensagem de confirmação. |
+
+As requisições que enviam dados devem usar `Content-Type: application/json`. Para cadastrar, por exemplo:
+
+```json
+{
+  "email": "ana@example.com",
+  "name": "Ana",
+  "age": 28
+}
+```
+
+### Configuração e execução do backend
+
+É necessário ter Node.js, npm e uma instância MongoDB acessível. Configure `DATABASE_URL` no arquivo `.env` do backend com sua própria URL de conexão:
+
+```env
+DATABASE_URL="mongodb+srv://<usuario>:<senha>@<cluster>/<banco>"
+```
+
+Não compartilhe nem versione credenciais de banco de dados. Na pasta do backend, instale as dependências e inicie a API:
+
+```bash
+npm install
+node --env-file=.env server.js
+```
+
+A opção `--env-file` requer uma versão do Node.js que ofereça suporte a ela. Por padrão, a API escuta na porta `3000`.
+
+O frontend se conecta à API em `http://localhost:3000` e usa `POST /usuarios` para cadastro, `GET /usuarios` para listagem e `DELETE /usuarios/:id` para exclusão. A API também oferece atualização por `PUT /usuarios/:id`.
+
+> A API não define autenticação, paginação ou validação explícita dos dados recebidos. O script `test` do backend ainda é um placeholder, sem testes configurados.
+
+## Requisitos do frontend
 
 - Node.js e npm instalados.
-- Uma API de cadastro de usuários disponível em `http://localhost:3000`.
-
-O frontend usa os endpoints `POST /usuarios` para cadastrar, `GET /usuarios` para listar e `DELETE /usuarios/:id` para excluir usuários. A API/backend não está incluída neste projeto e precisa estar em execução para essas funcionalidades funcionarem.
+- O backend disponível em `http://localhost:3000` para utilizar as funcionalidades que acessam a API.
 
 ## Como executar
 
